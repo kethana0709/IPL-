@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BioSight | AI Aquatic Weed & Biogas Optimizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #101726;
+      --card-border: #1e293b;
+      --card-hover: #172033;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --primary-glow: rgba(16, 185, 129, 0.25);
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.2);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.12);
+      --danger-border: rgba(239, 68, 68, 0.4);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --success-border: rgba(16, 185, 129, 0.4);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --warning-border: rgba(245, 158, 11, 0.4);
+      --radius: 14px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1.25rem;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 45%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 45%);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1040px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #10b981, #047857);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .brand-text h1 span {
+      background: linear-gradient(135deg, #10b981, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: #0b1120;
+      padding: 0.3rem;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 1.25rem;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.5rem 1.15rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .tab-btn.active {
+      background: var(--card-bg);
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      border: 1px solid var(--card-border);
+    }
+
+    /* Panels */
+    .tab-panel {
+      display: none;
+    }
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Inline Validation Banner */
+    .validation-alert {
+      display: none;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: #fca5a5;
+      padding: 0.85rem 1.15rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .validation-alert.active {
+      display: flex;
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    /* Upload Area */
+    .dropzone {
+      border: 2px dashed #334155;
+      border-radius: 12px;
+      padding: 2.25rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: rgba(11, 17, 32, 0.4);
+      position: relative;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary);
+      background: rgba(16, 185, 129, 0.04);
+    }
+
+    .dropzone input {
+      display: none;
+    }
+
+    .dropzone-icon {
+      font-size: 2.25rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .dropzone h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .dropzone p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Water-Body badge */
+    .water-body-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.65rem;
+      font-size: 0.75rem;
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    /* Sample chips */
+    .sample-chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 1.15rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sample-chips span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-right: 0.25rem;
+    }
+
+    .chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .chip:hover {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+    }
+
+    /* Form Controls */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.15rem;
+      margin-top: 1.15rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-group input {
+      background: #0b1120;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .form-group input.input-error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px var(--danger-border);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 16px var(--primary-glow);
+      margin-top: 1.15rem;
+      width: 100%;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Results Container */
+    #results-section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    /* Upgraded Municipal Alert Box */
+    .alert-box {
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid transparent;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+
+    .alert-box.triggered {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+    }
+
+    .alert-box.normal {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+    }
+
+    .alert-main {
+      display: flex;
+      gap: 1.15rem;
+      align-items: flex-start;
+    }
+
+    .alert-icon {
+      font-size: 1.85rem;
+      line-height: 1;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .alert-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .alert-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .growth-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: #7f1d1d;
+      color: #fecaca;
+      border: 1px solid #b91c1c;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .growth-badge.negative {
+      background: #064e3b;
+      color: #a7f3d0;
+      border-color: #047857;
+    }
+
+    .alert-box.triggered .alert-badge {
+      background: #ef4444;
+      color: white;
+    }
+
+    .alert-box.normal .alert-badge {
+      background: #10b981;
+      color: #090d16;
+    }
+
+    .alert-msg {
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      line-height: 1.45;
+    }
+
+    .alert-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* 3-Step Municipal Action Plan */
+    .action-plan-container {
+      margin-top: 1.15rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .alert-box.normal .action-plan-container {
+      border-top-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .action-plan-header {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #fca5a5;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .alert-box.normal .action-plan-header {
+      color: #86efac;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .step-card {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: #ef4444;
+      color: white;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 800;
+      margin-right: 0.4rem;
+    }
+
+    .alert-box.normal .step-num {
+      background: #10b981;
+      color: #090d16;
+    }
+
+    .step-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: inline;
+    }
+
+    .step-tag {
+      display: block;
+      font-size: 0.68rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .step-detail {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.15rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .metric-card.accent::before {
+      background: var(--accent);
+    }
+
+    .metric-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+
+    .metric-unit {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .metric-desc {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin-top: 0.4rem;
+    }
+
+    /* Split Bar */
+    .split-bar-container {
+      margin-top: 0.65rem;
+    }
+
+    .split-bar {
+      height: 9px;
+      width: 100%;
+      background: #334155;
+      border-radius: 999px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .split-weed {
+      background: #10b981;
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    .split-manure {
+      background: #f59e0b;
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    .split-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    /* Dedicated Recipe Card */
+    .recipe-card {
+      background: linear-gradient(180deg, #131c2e, #0e1626);
+      border: 1px solid #233554;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .recipe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.15rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .recipe-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .recipe-title span {
+      color: #38bdf8;
+    }
+
+    .recipe-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .ingredients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .ing-item {
+      background: #0b1120;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.9rem;
+      position: relative;
+    }
+
+    .ing-tag {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #38bdf8;
+      margin-bottom: 0.25rem;
+    }
+
+    .ing-qty {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+    }
+
+    .ing-qty span {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .ing-name {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      margin-top: 0.25rem;
+    }
+
+    /* Recipe Conditions & Steps */
+    .recipe-subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 1.15rem;
+    }
+
+    @media (max-width: 768px) {
+      .recipe-subgrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .conditions-box {
+      background: #090e1a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .box-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .cond-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .cond-list li {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed rgba(255,255,255,0.06);
+      padding-bottom: 0.3rem;
+    }
+
+    .cond-list li span:last-child {
+      font-weight: 600;
+      color: #38bdf8;
+    }
+
+    .instructions-box {
+      background: #090e1a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      padding-left: 0;
+    }
+
+    .step-list li {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .step-list li::before {
+      content: '✓';
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* Image Preview */
+    .image-preview-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.15rem;
+      margin-top: 1rem;
+    }
+
+    .preview-box {
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0b1120;
+    }
+
+    .preview-box-header {
+      padding: 0.55rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #131c2e;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .preview-box img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Water-body stats panel */
+    .water-stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+      padding: 0.65rem 0.85rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    .water-stats-row strong {
+      color: #e2e8f0;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      padding-top: 2rem;
+      font-size: 0.78rem;
+      color: #64748b;
+      text-align: center;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">🌱</div>
+        <div class="brand-text">
+          <h1>BioSight <span>Intelligence</span></h1>
+          <p>Aquatic Water-Body Weed Monitoring & Biogas Feedstock Optimizer</p>
+        </div>
+      </div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span>Water-Body Filtering Active</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('image-tab', this)">📸 Aerial Image Analysis</button>
+      <button class="tab-btn" onclick="switchTab('manual-tab', this)">🎛️ Manual Parameters</button>
+    </div>
+
+    <!-- Inline Validation Alert -->
+    <div class="validation-alert" id="validation-banner">
+      <span style="font-size: 1.1rem;">⚠️</span>
+      <span id="validation-msg">Input Validation Error: Digestion Duration (Days) and Harvested Biomass (kg) must be strictly positive numbers greater than zero.</span>
+    </div>
+
+    <!-- Panel 1: Image Upload -->
+    <div id="image-tab" class="tab-panel active">
+      <div class="card">
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+          <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(this.files)">
+          <div class="dropzone-icon">🌊</div>
+          <h3>Upload Aerial Drone Photo of Water Body</h3>
+          <p>Drag & drop image or click to browse (JPG, PNG)</p>
+          <div class="water-body-tag">🛡️ Automated Land & Tree Vegetation Filtering Enabled</div>
+          <div id="selected-file-name" style="margin-top: 0.75rem; font-weight: 600; color: #34d399; font-size: 0.82rem;"></div>
+        </div>
+
+        <div class="sample-chips">
+          <span>Quick Test Samples:</span>
+          <button class="chip" onclick="loadSampleImage('datasets/drone-view-aerial-photography-dataset-for-water-hyacinth-detection-in-voc-yolo-f-main/img_02.jpg')">
+            Canal Survey (~7.0% Weed, Compliant)
+          </button>
+          <button class="chip" onclick="loadSampleImage('datasets/drone-view-aerial-photography-dataset-for-water-hyacinth-detection-in-voc-yolo-f-main/img_04.jpg')">
+            Pond Survey (~25.2% Weed, Alert > 15%)
+          </button>
+          <button class="chip" onclick="loadSampleImage('datasets/archive (1)/bluegreen_algae_bloom_release/images/level_1/000001.jpg')">
+            Dianchi Lake (~28.3% Bloom, Alert > 15%)
+          </button>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="img-baseline-pct">Previous Survey Baseline Coverage (%)</label>
+            <input type="number" id="img-baseline-pct" value="12.0" min="1" max="90" step="0.5">
+          </div>
+          <div class="form-group">
+            <label for="img-biomass-kg">Harvested Biomass (kg)</label>
+            <input type="number" id="img-biomass-kg" value="1000" min="1" step="50">
+          </div>
+          <div class="form-group">
+            <label for="img-digestion-days">Digestion Duration (Days)</label>
+            <input type="number" id="img-digestion-days" value="35" min="1" max="85">
+          </div>
+        </div>
+
+        <button class="submit-btn" id="analyze-btn" onclick="uploadAndAnalyze()">
+          <span class="spinner" id="img-spinner"></span>
+          <span id="img-btn-text">Run Water-Body Detection & Biogas Optimization</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel 2: Manual Parameters -->
+    <div id="manual-tab" class="tab-panel">
+      <div class="card">
+        <h3 style="margin-bottom: 0.35rem; font-size: 1.05rem;">Direct Parameter Simulation</h3>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.15rem;">
+          Simulate aquatic weed surface coverage and feedstock mass to evaluate municipal alerts and recipe calculations.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="man-weed-pct">Weed Surface Coverage (% of Water)</label>
+            <input type="number" id="man-weed-pct" value="22.5" min="0" max="100" step="0.5">
+          </div>
+          <div class="form-group">
+            <label for="man-baseline-pct">Previous Survey Baseline (%)</label>
+            <input type="number" id="man-baseline-pct" value="12.0" min="1" max="90" step="0.5">
+          </div>
+          <div class="form-group">
+            <label for="man-biomass-kg">Harvested Biomass (kg)</label>
+            <input type="number" id="man-biomass-kg" value="1000" min="1" step="50">
+          </div>
+          <div class="form-group">
+            <label for="man-digestion-days">Anaerobic Digestion Days</label>
+            <input type="number" id="man-digestion-days" value="35" min="1" max="85">
+          </div>
+        </div>
+
+        <button class="submit-btn" id="man-submit-btn" onclick="submitManualParams()">
+          <span class="spinner" id="man-spinner"></span>
+          <span id="man-btn-text">Generate Recipe & Municipal Alert</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-section">
+      <!-- Upgraded Municipal Alert Box -->
+      <div id="alert-container" class="alert-box">
+        <div class="alert-main">
+          <div class="alert-icon" id="alert-icon">⚠️</div>
+          <div class="alert-content">
+            <div class="alert-header">
+              <div class="alert-title" id="alert-title">Municipal Alert Notification</div>
+              <span class="alert-badge" id="alert-badge">WARNING</span>
+              <span class="growth-badge" id="growth-badge">+0.0% pts (+0.0% spike)</span>
+            </div>
+            <p class="alert-msg" id="alert-msg">Checking threshold...</p>
+            <div class="alert-meta">
+              <span id="alert-id">Alert ID: ---</span>
+              <span id="alert-timestamp">Timestamp: ---</span>
+              <span id="alert-threshold">Threshold: &gt; 15.0% Area Coverage</span>
+              <span id="alert-baseline">Baseline: 12.0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Step Municipal Action Plan -->
+        <div class="action-plan-container" id="action-plan-section">
+          <div class="action-plan-header">
+            <span>📋 3-Step Municipal Action Plan</span>
+          </div>
+          <div class="steps-grid" id="steps-grid">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Output Cards -->
+      <div class="metrics-grid">
+        <!-- Metric 1: Weed Coverage -->
+        <div class="metric-card">
+          <div class="metric-label">Weed Surface Coverage</div>
+          <div class="metric-value" id="val-coverage">0.0 <span class="metric-unit">%</span></div>
+          <div class="metric-desc" id="desc-coverage">Relative to detected water-body area</div>
+        </div>
+
+        <!-- Metric 2: Optimal Mixing Ratio -->
+        <div class="metric-card">
+          <div class="metric-label">Optimal Co-Digestion Ratio</div>
+          <div class="metric-value" id="val-mixing">60 / 40 <span class="metric-unit">Ratio</span></div>
+          <div class="split-bar-container">
+            <div class="split-bar">
+              <div class="split-weed" id="bar-weed" style="width: 60%;"></div>
+              <div class="split-manure" id="bar-manure" style="width: 40%;"></div>
+            </div>
+            <div class="split-legend">
+              <span id="lbl-weed">🌿 Weed: 60%</span>
+              <span id="lbl-manure">🐄 Manure: 40%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric 3: Specific Methane Yield -->
+        <div class="metric-card accent">
+          <div class="metric-label">Predicted Methane Yield</div>
+          <div class="metric-value" id="val-yield">0.0 <span class="metric-unit">ml/g VS</span></div>
+          <div class="metric-desc">Gradient Boosting Model (R² = 0.912)</div>
+        </div>
+
+        <!-- Metric 4: Total Batch Biogas Output -->
+        <div class="metric-card accent">
+          <div class="metric-label">Estimated Methane Output</div>
+          <div class="metric-value" id="val-total-m3">0.0 <span class="metric-unit">m³ CH₄</span></div>
+          <div class="metric-desc" id="desc-total-m3">Net volumetric bio-methane</div>
+        </div>
+      </div>
+
+      <!-- Dedicated Dynamic Biogas Recipe Card -->
+      <div class="recipe-card" id="recipe-card">
+        <div class="recipe-header">
+          <div>
+            <div class="recipe-title">🧪 Dynamic Biogas <span>Co-Digestion Recipe</span></div>
+            <div class="recipe-subtitle">Calculated feedstock proportions and dilution for optimal anaerobic C:N balance</div>
+          </div>
+          <span style="font-size: 0.75rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 0.25rem 0.65rem; border-radius: 999px; font-weight: 600; border: 1px solid rgba(56, 189, 248, 0.3);">
+            Mesophilic Batch Standard
+          </span>
+        </div>
+
+        <!-- Recipe Ingredients -->
+        <div class="ingredients-grid">
+          <div class="ing-item">
+            <div class="ing-tag">Harvested Biomass</div>
+            <div class="ing-qty" id="rec-weed-kg">1,000 <span class="ing-unit">kg</span></div>
+            <div class="ing-name">Aquatic Weed / Water Hyacinth</div>
+          </div>
+
+          <div class="ing-item">
+            <div class="ing-tag">Nitrogen Co-Substrate</div>
+            <div class="ing-qty" id="rec-manure-kg">667 <span class="ing-unit">kg</span></div>
+            <div class="ing-name">Cattle Manure / Organic Slurry</div>
+          </div>
+
+          <div class="ing-item">
+            <div class="ing-tag">Water Dilution</div>
+            <div class="ing-qty" id="rec-water-l">750 <span class="ing-unit">Liters</span></div>
+            <div class="ing-name">Dilution for 8–10% TS consistency</div>
+          </div>
+
+          <div class="ing-item">
+            <div class="ing-tag">Total Slurry Charge</div>
+            <div class="ing-qty" id="rec-total-kg">2,417 <span class="ing-unit">kg</span></div>
+            <div class="ing-name">Prepared Digester Inflow Batch</div>
+          </div>
+        </div>
+
+        <!-- Target Conditions & Batch Loading Instructions -->
+        <div class="recipe-subgrid">
+          <div class="conditions-box">
+            <div class="box-title">⚙️ Target Digester Parameters</div>
+            <ul class="cond-list">
+              <li><span>Operating pH Buffer:</span> <span id="rec-cond-ph">6.8 – 7.2</span></li>
+              <li><span>Temperature Regime:</span> <span id="rec-cond-temp">35°C (Mesophilic)</span></li>
+              <li><span>Slurry Total Solids (TS):</span> <span id="rec-cond-ts">8.5% – 9.5%</span></li>
+              <li><span>Co-Digestion C:N Ratio:</span> <span id="rec-cond-cn">25.0:1 – 28.0:1</span></li>
+            </ul>
+          </div>
+
+          <div class="instructions-box">
+            <div class="box-title">📝 Step-by-Step Batch Loading Instructions</div>
+            <ul class="step-list" id="rec-instructions-list">
+              <!-- Rendered dynamically -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Segmentation Visualizer (Image Mode Only) -->
+      <div class="card" id="visualizer-card" style="display: none;">
+        <h3 style="margin-bottom: 0.25rem; font-size: 1rem;">Water-Body Filtered Segmentation Overlay</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+          The water basin is highlighted in soft cyan; aquatic weed mats floating in the water body are in bright green. Land vegetation outside the water zone is filtered out.
+        </p>
+        <div class="image-preview-container">
+          <div class="preview-box">
+            <div class="preview-box-header">Original Aerial Photo</div>
+            <img id="img-original-preview" alt="Original Image">
+          </div>
+          <div class="preview-box">
+            <div class="preview-box-header">Water-Body Weed Mask Overlay</div>
+            <img id="img-segmented-preview" alt="Segmented Weed Mask">
+          </div>
+        </div>
+        <div class="water-stats-row" id="water-stats-row">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      BioSight Environmental Intelligence • Water-Body Segmentation & Dynamic Recipe Generator • Flask & Scikit-Learn
+    </footer>
+  </div>
+
+  <script>
+    let selectedFile = null;
+
+    // Tab switcher
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      hideValidationAlert();
+    }
+
+    // Input Validation Helpers
+    function showValidationAlert(msg) {
+      const banner = document.getElementById('validation-banner');
+      document.getElementById('validation-msg').textContent = msg;
+      banner.classList.add('active');
+      banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideValidationAlert() {
+      const banner = document.getElementById('validation-banner');
+      banner.classList.remove('active');
+      document.querySelectorAll('.input-error').forEach(input => input.classList.remove('input-error'));
+    }
+
+    // Drag and drop handlers
+    const dropzone = document.getElementById('dropzone');
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        handleFileSelect(e.dataTransfer.files);
+      }
+    });
+
+    function handleFileSelect(files) {
+      if (!files.length) return;
+      selectedFile = files[0];
+      document.getElementById('selected-file-name').textContent = `✓ Selected: ${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)`;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('img-original-preview').src = e.target.result;
+      };
+      reader.readAsDataURL(selectedFile);
+      hideValidationAlert();
+    }
+
+    // Quick sample image loader
+    async function loadSampleImage(relPath) {
+      hideValidationAlert();
+      const digestionDays = parseFloat(document.getElementById('img-digestion-days').value);
+      const biomassKg = parseFloat(document.getElementById('img-biomass-kg').value);
+      const baselinePct = parseFloat(document.getElementById('img-baseline-pct').value);
+
+      if (isNaN(digestionDays) || digestionDays <= 0 || isNaN(biomassKg) || biomassKg <= 0) {
+        showValidationAlert("Validation Error: Digestion Duration (Days) and Harvested Biomass (kg) must be strictly positive numbers greater than zero.");
+        return;
+      }
+
+      setLoading(true, 'img');
+      try {
+        const resp = await fetch('/api/load_sample', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            path: relPath,
+            digestion_days: digestionDays,
+            biomass_kg: biomassKg,
+            baseline_coverage_pct: baselinePct
+          })
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+
+        document.getElementById('selected-file-name').textContent = `✓ Active Sample: ${data.filename}`;
+        document.getElementById('img-original-preview').src = data.overlay_base64;
+        renderResults(data);
+      } catch (err) {
+        showValidationAlert(err.message);
+      } finally {
+        setLoading(false, 'img');
+      }
+    }
+
+    // Upload & analyze image
+    async function uploadAndAnalyze() {
+      hideValidationAlert();
+      if (!selectedFile) {
+        showValidationAlert("Please select or drop an aerial image first, or click one of the quick test sample buttons!");
+        return;
+      }
+
+      const daysInput = document.getElementById('img-digestion-days');
+      const biomassInput = document.getElementById('img-biomass-kg');
+      const baselineInput = document.getElementById('img-baseline-pct');
+
+      const digestionDays = parseFloat(daysInput.value);
+      const biomassKg = parseFloat(biomassInput.value);
+      const baselinePct = parseFloat(baselineInput.value);
+
+      let hasError = false;
+      if (isNaN(digestionDays) || digestionDays <= 0) {
+        daysInput.classList.add('input-error');
+        hasError = true;
+      }
+      if (isNaN(biomassKg) || biomassKg <= 0) {
+        biomassInput.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (hasError) {
+        showValidationAlert("Validation Error: Digestion Duration (Days) and Harvested Biomass (kg) must be positive values greater than zero.");
+        return;
+      }
+
+      setLoading(true, 'img');
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      formData.append('digestion_days', digestionDays);
+      formData.append('biomass_kg', biomassKg);
+      formData.append('baseline_coverage_pct', isNaN(baselinePct) ? 12.0 : baselinePct);
+
+      try {
+        const resp = await fetch('/api/predict/image', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        renderResults(data);
+      } catch (err) {
+        showValidationAlert("Inference Error: " + err.message);
+      } finally {
+        setLoading(false, 'img');
+      }
+    }
+
+    // Manual tabular submission
+    async function submitManualParams() {
+      hideValidationAlert();
+      const weedInput = document.getElementById('man-weed-pct');
+      const baselineInput = document.getElementById('man-baseline-pct');
+      const biomassInput = document.getElementById('man-biomass-kg');
+      const daysInput = document.getElementById('man-digestion-days');
+
+      const weedCoveragePct = parseFloat(weedInput.value);
+      const baselinePct = parseFloat(baselineInput.value);
+      const biomassKg = parseFloat(biomassInput.value);
+      const digestionDays = parseFloat(daysInput.value);
+
+      let hasError = false;
+      if (isNaN(biomassKg) || biomassKg <= 0) {
+        biomassInput.classList.add('input-error');
+        hasError = true;
+      }
+      if (isNaN(digestionDays) || digestionDays <= 0) {
+        daysInput.classList.add('input-error');
+        hasError = true;
+      }
+      if (isNaN(weedCoveragePct) || weedCoveragePct < 0 || weedCoveragePct > 100) {
+        weedInput.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (hasError) {
+        showValidationAlert("Validation Error: Digestion Duration (Days) and Harvested Biomass (kg) must be strictly positive numbers (> 0), and Weed Coverage must be between 0% and 100%.");
+        return;
+      }
+
+      setLoading(true, 'man');
+      const payload = {
+        weed_coverage_pct: weedCoveragePct,
+        baseline_coverage_pct: isNaN(baselinePct) ? 12.0 : baselinePct,
+        biomass_kg: biomassKg,
+        digestion_days: digestionDays
+      };
+
+      try {
+        const resp = await fetch('/api/predict/tabular', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error);
+        renderResults(data);
+      } catch (err) {
+        showValidationAlert("Calculation Error: " + err.message);
+      } finally {
+        setLoading(false, 'man');
+      }
+    }
+
+    function setLoading(isLoading, mode) {
+      const spinner = document.getElementById(`${mode}-spinner`);
+      const btnText = document.getElementById(`${mode}-btn-text`);
+      const btn = mode === 'img' ? document.getElementById('analyze-btn') : document.getElementById('man-submit-btn');
+
+      if (isLoading) {
+        spinner.style.display = 'inline-block';
+        btnText.textContent = 'Processing with AI Model...';
+        btn.disabled = true;
+      } else {
+        spinner.style.display = 'none';
+        btnText.textContent = mode === 'img' ? 'Run Water-Body Detection & Biogas Optimization' : 'Generate Recipe & Municipal Alert';
+        btn.disabled = false;
+      }
+    }
+
+    // Render results on screen
+    function renderResults(data) {
+      document.getElementById('results-section').style.display = 'block';
+
+      // 1. Upgraded Municipal Alert Box & Growth Rate
+      const alertBox = document.getElementById('alert-container');
+      const alertIcon = document.getElementById('alert-icon');
+      const alertTitle = document.getElementById('alert-title');
+      const alertBadge = document.getElementById('alert-badge');
+      const alertMsg = document.getElementById('alert-msg');
+      const alertMetaId = document.getElementById('alert-id');
+      const alertMetaTime = document.getElementById('alert-timestamp');
+      const alertBaseline = document.getElementById('alert-baseline');
+      const growthBadge = document.getElementById('growth-badge');
+
+      const alertInfo = data.municipal_alert;
+
+      // Growth badge calculation
+      const spikeSign = alertInfo.point_spike >= 0 ? '+' : '';
+      const relSign = alertInfo.relative_growth_pct >= 0 ? '+' : '';
+      growthBadge.textContent = `${spikeSign}${alertInfo.point_spike}% pts (${relSign}${alertInfo.relative_growth_pct}% vs ${alertInfo.baseline_coverage_pct}% baseline)`;
+      if (alertInfo.point_spike < 0) {
+        growthBadge.classList.add('negative');
+      } else {
+        growthBadge.classList.remove('negative');
+      }
+
+      if (alertInfo.triggered) {
+        alertBox.className = 'alert-box triggered';
+        alertIcon.textContent = alertInfo.severity === 'CRITICAL' ? '🚨' : '⚠️';
+        alertTitle.textContent = alertInfo.severity === 'CRITICAL' 
+          ? 'MUNICIPAL EMERGENCY: Critical Aquatic Proliferation'
+          : 'MUNICIPAL ALERT: Weed Coverage Exceeds 15.0% Threshold';
+        alertBadge.textContent = alertInfo.severity;
+        alertMsg.textContent = `${alertInfo.message} Current detected coverage is ${data.weed_coverage_pct}% across the segmented water body.`;
+      } else {
+        alertBox.className = 'alert-box normal';
+        alertIcon.textContent = '✅';
+        alertTitle.textContent = 'ECOLOGICAL COMPLIANCE: Waterway Normal';
+        alertBadge.textContent = 'NORMAL';
+        alertMsg.textContent = `${alertInfo.message} (Recorded at ${data.weed_coverage_pct}% of total water surface).`;
+      }
+
+      alertMetaId.textContent = `Alert ID: ${alertInfo.alert_id}`;
+      alertMetaTime.textContent = `Timestamp: ${alertInfo.timestamp}`;
+      alertBaseline.textContent = `Baseline Survey: ${alertInfo.baseline_coverage_pct}%`;
+
+      // Render 3-Step Municipal Action Plan
+      const stepsGrid = document.getElementById('steps-grid');
+      stepsGrid.innerHTML = '';
+      if (alertInfo.action_plan_steps && alertInfo.action_plan_steps.length) {
+        alertInfo.action_plan_steps.forEach(step => {
+          const stepEl = document.createElement('div');
+          stepEl.className = 'step-card';
+          stepEl.innerHTML = `
+            <div>
+              <span class="step-num">${step.step_num}</span>
+              <div class="step-title">${step.title}</div>
+            </div>
+            <div class="step-tag">${step.tag}</div>
+            <div class="step-detail">${step.detail}</div>
+          `;
+          stepsGrid.appendChild(stepEl);
+        });
+      }
+
+      // 2. Metrics Cards
+      document.getElementById('val-coverage').innerHTML = `${data.weed_coverage_pct} <span class="metric-unit">%</span>`;
+
+      const mix = data.recipe;
+      document.getElementById('val-mixing').innerHTML = `${mix.weed_ratio_pct.toFixed(0)} / ${mix.manure_ratio_pct.toFixed(0)} <span class="metric-unit">Ratio</span>`;
+      document.getElementById('bar-weed').style.width = `${mix.weed_ratio_pct}%`;
+      document.getElementById('bar-manure').style.width = `${mix.manure_ratio_pct}%`;
+      document.getElementById('lbl-weed').textContent = `🌿 Weed: ${mix.weed_ratio_pct.toFixed(0)}%`;
+      document.getElementById('lbl-manure').textContent = `🐄 Manure: ${mix.manure_ratio_pct.toFixed(0)}%`;
+
+      document.getElementById('val-yield').innerHTML = `${data.predicted_methane_yield_ml_g_vs} <span class="metric-unit">ml/g VS</span>`;
+      document.getElementById('val-total-m3').innerHTML = `${data.estimated_total_methane_m3} <span class="metric-unit">m³ CH₄</span>`;
+      document.getElementById('desc-total-m3').textContent = `From ${mix.harvested_weed_kg.toLocaleString()} kg weed + ${mix.cattle_manure_kg.toLocaleString()} kg manure`;
+
+      // 3. Dynamic Biogas Co-Digestion Recipe Card
+      document.getElementById('rec-weed-kg').innerHTML = `${mix.harvested_weed_kg.toLocaleString()} <span class="ing-unit">kg</span>`;
+      document.getElementById('rec-manure-kg').innerHTML = `${mix.cattle_manure_kg.toLocaleString()} <span class="ing-unit">kg</span>`;
+      document.getElementById('rec-water-l').innerHTML = `${mix.water_dilution_liters.toLocaleString()} <span class="ing-unit">Liters</span>`;
+      document.getElementById('rec-total-kg').innerHTML = `${mix.total_slurry_mass_kg.toLocaleString()} <span class="ing-unit">kg</span>`;
+
+      document.getElementById('rec-cond-ph').textContent = mix.target_conditions.optimal_ph_range;
+      document.getElementById('rec-cond-temp').textContent = `${mix.target_conditions.optimal_temperature_c}°C (Mesophilic)`;
+      document.getElementById('rec-cond-ts').textContent = mix.target_conditions.slurry_total_solids_pct;
+      document.getElementById('rec-cond-cn').textContent = mix.target_conditions.optimal_cn_ratio;
+
+      const instructionsList = document.getElementById('rec-instructions-list');
+      instructionsList.innerHTML = '';
+      if (mix.loading_instructions && mix.loading_instructions.length) {
+        mix.loading_instructions.forEach(inst => {
+          const li = document.createElement('li');
+          li.textContent = inst;
+          instructionsList.appendChild(li);
+        });
+      }
+
+      // 4. Image Overlay & Water-Body Filtering Breakdown
+      const visualizer = document.getElementById('visualizer-card');
+      if (data.overlay_base64) {
+        visualizer.style.display = 'block';
+        document.getElementById('img-segmented-preview').src = data.overlay_base64;
+
+        const statsRow = document.getElementById('water-stats-row');
+        statsRow.innerHTML = `
+          <span>💧 <strong>Water Basin:</strong> ${data.total_water_pixels ? data.total_water_pixels.toLocaleString() : 'N/A'} px</span>
+          <span>🌿 <strong>Aquatic Weed:</strong> ${data.weed_pixels ? data.weed_pixels.toLocaleString() : '0'} px</span>
+          <span>🌲 <strong>Filtered Terrestrial Foliage:</strong> ${data.filtered_land_veg_pixels ? data.filtered_land_veg_pixels.toLocaleString() : '0'} px</span>
+          <span>🎯 <strong>Net Water Weed Coverage:</strong> ${data.weed_coverage_pct}%</span>
+        `;
+      } else {
+        visualizer.style.display = 'none';
+      }
+
+      // Smooth scroll to results
+      document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>
