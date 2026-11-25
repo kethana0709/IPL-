@@ -20,7 +20,7 @@ logger = logging.getLogger("BioSightApp")
 app = Flask(__name__, template_folder="../templates")
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32MB max upload
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
 
 # Load saved AI models
